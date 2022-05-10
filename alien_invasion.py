@@ -1,6 +1,6 @@
 import sys
 import pygame
-from setting import Settings
+from settings import Settings
 
 class AlienInvasion:
 	"""Overall class to manage games assets and behaviour."""
@@ -22,7 +22,8 @@ class AlienInvasion:
 				if event.type == pygame.QUIT:
 					sys.exit()
 			#Redraw the screen during each pass through the loop.
-				self.screen.fill(self.settings.bg_color)
+				#self.screen.fill(self.settings.bg_color)
+				self.screen.fill((230, 230, 230))
 			#Make the most recently drawn screen visible.
 				pygame.display.flip()
 
