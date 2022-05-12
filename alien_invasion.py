@@ -12,8 +12,8 @@ class AlienInvasion:
 		self.settings = Settings()
 		self.screen = pygame.display.set_mode((
 					self.settings.screen_width, 
-					self.settings.screen_height)
-					)
+					self.settings.screen_height
+					))
 		pygame.display.set_caption("Alien Invasion")
 		self.ship = Ship(self)
 
@@ -34,10 +34,17 @@ class AlienInvasion:
 				if event.key == pygame.K_RIGHT:
 					#Move the ship to the right.
 					self.ship.moving_right = True
+				if event.key == pygame.K_LEFT:
+					#Move the ship to the left.
+					self.ship.moving_left = True
 			elif event.type == pygame.KEYUP:
 				if event.key == pygame.K_RIGHT:
 					#stops the ship from moving to the right.
 					self.ship.moving_right = False
+				if event.key == pygame.K_LEFT:
+					#stops the ship from moving to the left.
+					self.ship.moving_left = False
+
 
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
