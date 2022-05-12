@@ -2,6 +2,7 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
+from music import Music
 
 class AlienInvasion:
 	"""Overall class to manage games assets and behaviour."""
@@ -17,11 +18,13 @@ class AlienInvasion:
 		self.settings.screen_height = self.screen.get_rect().height
 		pygame.display.set_caption("Alien Invasion")
 		self.ship = Ship(self)
+		self.music = Music(self)
 		#system flags
 		self.exit_game = False
 
 	def run_game(self):
 		"""Start the main loop for the game."""
+		self.music.play()
 		while True:
 			self._check_events()
 			self.ship.update()
@@ -35,8 +38,6 @@ class AlienInvasion:
 				self._check_keydown_events(event)
 				self._check_keyup_events(event)
 	
-
-
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
@@ -49,7 +50,8 @@ class AlienInvasion:
 		if event.type == pygame.QUIT:
 			self.exit_game =True
 		if self.exit_game:
-				sys.exit()
+			self.music.stop()
+			sys.exit()
 
 	def _check_keydown_events(self, event):
 		"""Respond to key press."""
@@ -61,6 +63,7 @@ class AlienInvasion:
 				#Move the ship to the left.
 				self.ship.moving_left = True
 			if event.key == pygame.K_q:
+				self.play_music = False
 				self.exit_game = True
 
 	def _check_keyup_events(self, event):
