@@ -16,6 +16,8 @@ class AlienInvasion:
 					))
 		pygame.display.set_caption("Alien Invasion")
 		self.ship = Ship(self)
+		#system flags
+		self.exit_game = False
 
 	def run_game(self):
 		"""Start the main loop for the game."""
@@ -44,6 +46,8 @@ class AlienInvasion:
 	def _check_close_game(self, event):
 		"""Respond to exit game."""
 		if event.type == pygame.QUIT:
+			self.exit_game =True
+		if self.exit_game:
 				sys.exit()
 
 	def _check_keydown_events(self, event):
@@ -55,6 +59,8 @@ class AlienInvasion:
 			if event.key == pygame.K_LEFT:
 				#Move the ship to the left.
 				self.ship.moving_left = True
+			if event.key == pygame.K_q:
+				self.exit_game = True
 
 	def _check_keyup_events(self, event):
 		"""Respond to key release."""
