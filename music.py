@@ -2,7 +2,7 @@ import pygame
 
 class Music():
 	"""Class for playing music inside the game."""
-	def __init__(self,ai_game):
+	def __init__(self):
 		"""Initializing music parameters."""
 		#Needed for playing music
 		pygame.init()
