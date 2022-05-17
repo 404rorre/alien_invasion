@@ -3,6 +3,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from music import Music
+from bullet import Bullet
 
 class AlienInvasion:
 	"""Overall class to manage games assets and behaviour."""
