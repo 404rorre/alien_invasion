@@ -2,8 +2,9 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
-from music import Music
 from bullet import Bullet
+from alien import Alien
+from music import Music
 
 class AlienInvasion:
 	"""Overall class to manage games assets and behaviour."""
@@ -19,10 +20,13 @@ class AlienInvasion:
 		self.settings.screen_height = self.screen.get_rect().height
 		pygame.display.set_caption("Alien Invasion")
 		self.ship = Ship(self)
+		self.aliens = pygame.sprite.Group()
 		self.bullets = pygame.sprite.Group()
 		self.music = Music()
 		#system flags
 		self.exit_game = False
+		#functions
+		self._create_fleet()
 
 	def run_game(self):
 		"""Start the main loop for the game."""
@@ -30,42 +34,16 @@ class AlienInvasion:
 		while True:
 			self._check_events()
 			self.ship.update()
-			self.__update_bullets()
+			self._update_bullets()
 			self._update_screen()			
 
 	def _check_events(self):
 		"""Respond to keypress and mousevents."""
 		#Watch for keyboard and mouse events.
-		for event in pygame.event.get():
-				self._check_close_game(event)
+		for event in pygame.event.get():				
 				self._check_keydown_events(event)
 				self._check_keyup_events(event)
-	
-	def _update_screen(self):
-		"""Update images on the screen and flip to the new screen."""
-		self.screen.fill(self.settings.bg_color)
-		self.ship.blitme()
-		for bullet in self.bullets.sprites():
-			bullet.draw_bullet()
-		#Make the most recently drawn screen visible.
-		pygame.display.flip()
-
-	def __update_bullets(self):
-		"""Update position of bullets and get reid of old bullets"""
-		#Update bullet position.
-		self.bullets.update()
-		#Get rid of bullets that have disappeared.
-		for bullet in self.bullets.copy():
-			if bullet.rect.bottom <= 0:
-				self.bullets.remove(bullet)
-
-	def _check_close_game(self, event):
-		"""Respond to exit game."""
-		if event.type == pygame.QUIT:
-			self.exit_game =True
-		if self.exit_game:
-			self.music.stop()
-			sys.exit()
+				self._check_close_game(event)
 
 	def _check_keydown_events(self, event):
 		"""Respond to key press."""
@@ -92,11 +70,52 @@ class AlienInvasion:
 				#stops the ship from moving to the left.
 				self.ship.moving_left = False
 
+	def _check_close_game(self, event):
+		"""Respond to exit game."""
+		if event.type == pygame.QUIT:
+			self.exit_game =True
+		if self.exit_game:
+			self.music.stop()
+			sys.exit()
+	
+	def _update_screen(self):
+		"""Update images on the screen and flip to the new screen."""
+		self.screen.fill(self.settings.bg_color)
+		self.ship.blitme()
+		self._draw_bullets()
+		self.aliens.draw(self.screen)
+		#Make the most recently drawn screen visible.
+		pygame.display.flip()
+
 	def _fire_bullet(self):
 		"""Create a new bullet and add it to the bullets group."""
 		if len(self.bullets) < self.settings.bullets_allowed:
 			new_bullet = Bullet(self)
 			self.bullets.add(new_bullet)
+
+	def _update_bullets(self):
+		"""Update position of bullets and get reid of old bullets"""
+		#Update bullet position.
+		self.bullets.update()
+		#Get rid of bullets that have disappeared.
+		for bullet in self.bullets.copy():
+			if bullet.rect.bottom <= 0:
+				self.bullets.remove(bullet)
+
+	def _draw_bullets(self):
+		"""Simple functions to draw bullets on screen."""
+		for bullet in self.bullets.sprites():
+			bullet.draw_bullet()
+
+	def _create_fleet(self):
+		"""Create the fleet of aliens."""
+		alien_new = Alien(self)
+		self.aliens.add(alien_new)
+
+
+
+
+
 
 if __name__ == "__main__":
 	#Make a game instance and run the game.
