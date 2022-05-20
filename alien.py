@@ -20,3 +20,4 @@ class Alien(Sprite):
 		self.x = float(self.rect.x)
 
 
+
