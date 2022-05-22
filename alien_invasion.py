@@ -109,38 +109,31 @@ class AlienInvasion:
 
 	def _create_fleet(self):
 		"""Create the fleet of aliens."""
-		#Max Nr. Aliens in a row
-		number_aliens_x = self._get_number_aliens_x()
-		#Create first row of aliens.
-		for alien_number in range (number_aliens_x):
-			self._create_alien(alien_number)
-
-	def _create_alien(self, alien_number):
-		"""Simple method to add more aliens."""
+		#Check rect parameters of the alien
 		alien = Alien(self)
-		alien_width = alien.rect.width
-		alien.x = alien_width + 2 * alien_width * alien_number
-		alien.rect.x = alien.x
-		self.aliens.add(alien)
-
-	def _get_number_aliens_x(self):
-		"""Simple method to return max horizontal Nr.'s of aliens."""
-		#Create an alien and find the number of aliens in a row.
-		alien = Alien(self)
-		alien_width = alien.rect.width
+		alien_width, alien_height = alien.rect.size
+		#Find the number of aliens in a row.
 		available_space_x = self.settings.screen_width - (2 * alien_width)
 		number_aliens_x = available_space_x // (2 * alien_width)
-		return number_aliens_x
+		#Find the number of aliens in a line.
+		ship_height = self.ship.rect.height
+		available_space_y = (self.settings.screen_height - (3 * alien_height) 
+							- ship_height)
+		number_rows = available_space_y // (2 * alien_height)
+		#Create the full fleet of aliens.
+		for row_number in range(number_rows):
+			for alien_number in range(number_aliens_x):
+				self._create_alien(alien_number, row_number)
 
-
-
-	
-
-			
-
-
-
-
+	def _create_alien(self, alien_number, row_number):
+		"""Simple method to add more aliens in a row."""
+		alien = Alien(self)
+		alien_width, alien_height = alien.rect.size
+		alien.x = alien_width + 2 * alien_width * alien_number
+		alien.rect.x = alien.x
+		alien.y = alien_height + 2 * alien_height * row_number
+		alien.rect.y = alien.y
+		self.aliens.add(alien)
 
 if __name__ == "__main__":
 	#Make a game instance and run the game.
