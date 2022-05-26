@@ -61,6 +61,7 @@ class AlienInvasion:
 			if event.key == pygame.K_SPACE:
 				self._fire_bullet()
 
+
 	def _check_keyup_events(self, event):
 		"""Respond to key release."""
 		if event.type == pygame.KEYUP:
@@ -102,6 +103,15 @@ class AlienInvasion:
 		for bullet in self.bullets.copy():
 			if bullet.rect.bottom <= 0:
 				self.bullets.remove(bullet)
+		#Check for any bullets that have hit aliens.
+		#If so, get rid of the bullet and the alien.
+		collisions = pygame.sprite.groupcollide(
+			self.bullets, self.aliens, True, True)
+		#Check if alien group is empty
+		if not self.aliens:
+			#Destroy existing bullets and create new fleet.
+			self.bullets.empty()
+			self._create_fleet()
 
 	def _draw_bullets(self):
 		"""Simple functions to draw bullets on screen."""
@@ -141,14 +151,7 @@ class AlienInvasion:
 		Check if the fleet is at an edge,
 		then ipdate the position of all alien in the fleet.
 		"""
-		old_direction = self.settings.fleet_direction
-		print(old_direction)
 		self._check_fleet_edges()
-		print(self.settings.fleet_direction)
-		if old_direction != self.settings.fleet_direction:
-			print("changed")
-		elif old_direction == self.settings.fleet_direction:
-			print("not changed")
 		self.aliens.update()
 
 	def _check_fleet_edges(self):
