@@ -141,7 +141,14 @@ class AlienInvasion:
 		Check if the fleet is at an edge,
 		then ipdate the position of all alien in the fleet.
 		"""
+		old_direction = self.settings.fleet_direction
+		print(old_direction)
 		self._check_fleet_edges()
+		print(self.settings.fleet_direction)
+		if old_direction != self.settings.fleet_direction:
+			print("changed")
+		elif old_direction == self.settings.fleet_direction:
+			print("not changed")
 		self.aliens.update()
 
 	def _check_fleet_edges(self):
@@ -153,11 +160,9 @@ class AlienInvasion:
 
 	def _change_fleet_direction(self):
 		"""Drop the entire fleet and change the fleet's direction."""
+		self.settings.fleet_direction *= -1
 		for alien in self.aliens.sprites():
 			alien.rect.y += self.settings.fleet_drop_speed
-			self.settings.fleet_direction *= -1
-
-
 
 if __name__ == "__main__":
 	#Make a game instance and run the game.
