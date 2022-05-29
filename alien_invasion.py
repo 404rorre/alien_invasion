@@ -59,7 +59,7 @@ class AlienInvasion:
 				self._check_close_game(event)
 				if event.type == pygame.MOUSEBUTTONDOWN:
 					mouse_pos = pygame.mouse.get_pos()
-					self._check_click_button(mouse_pos)
+					self._check_play_button(mouse_pos)
 
 	def _check_keydown_events(self, event):
 		"""Respond to key press."""
@@ -94,10 +94,21 @@ class AlienInvasion:
 			self.music.stop()
 			sys.exit()
 
-	def _check_click_button(self, mouse_pos):
+	def _check_play_button(self, mouse_pos):
 		"""Checks if button was clicked."""
-		if self.play_button.rect.collidepoint(mouse_pos):
+		if (self.play_button.rect.collidepoint(mouse_pos) and 
+			not self.stats.game_active):
+			#Reset the game statistics.
+			self.stats.reset_stats()
 			self.stats.game_active = True
+			#Get rid of any remaining aliens and bullets.
+			self.aliens.empty()
+			self.bullets.empty()
+			#create new fleet and reset ship position
+			self._create_fleet()
+			self.ship.center_ship()
+			#Hide the mouse cursor.
+			pygame.mouse.set_visible(False)
 	
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
@@ -210,6 +221,8 @@ class AlienInvasion:
 
 		else:
 			self.stats.game_active = False
+			#Show mouse cursor again
+			pygame.mouse.set_visible(True)
 
 	def _check_fleet_edges(self):
 		"""Respond apporpriately if any aliens have reached an edge."""
