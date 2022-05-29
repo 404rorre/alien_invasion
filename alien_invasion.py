@@ -6,6 +6,7 @@ from game_stats import GameStats
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from button import Button
 from music import Music
 
 class AlienInvasion:
@@ -23,14 +24,18 @@ class AlienInvasion:
 		pygame.display.set_caption("Alien Invasion")
 		#Create an instance to store game statistics
 		self.stats = GameStats(self)
+		#Initializing objects
 		self.ship = Ship(self)
 		self.aliens = pygame.sprite.Group()
 		self.bullets = pygame.sprite.Group()
-		self.music = Music()
 		#system flags
 		self.exit_game = False
-		#functions
+		#Functions
 		self._create_fleet()
+		#Initializing buttons.
+		self.play_button = Button(self, "Play")
+		#Initializing music.
+		self.music = Music()
 
 	def run_game(self):
 		"""Start the main loop for the game."""
@@ -52,6 +57,9 @@ class AlienInvasion:
 				self._check_keydown_events(event)
 				self._check_keyup_events(event)
 				self._check_close_game(event)
+				if event.type == pygame.MOUSEBUTTONDOWN:
+					mouse_pos = pygame.mouse.get_pos()
+					self._check_click_button(mouse_pos)
 
 	def _check_keydown_events(self, event):
 		"""Respond to key press."""
@@ -67,7 +75,6 @@ class AlienInvasion:
 				self.exit_game = True
 			if event.key == pygame.K_SPACE:
 				self._fire_bullet()
-
 
 	def _check_keyup_events(self, event):
 		"""Respond to key release."""
@@ -86,6 +93,11 @@ class AlienInvasion:
 		if self.exit_game:
 			self.music.stop()
 			sys.exit()
+
+	def _check_click_button(self, mouse_pos):
+		"""Checks if button was clicked."""
+		if self.play_button.rect.collidepoint(mouse_pos):
+			self.stats.game_active = True
 	
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
@@ -93,8 +105,11 @@ class AlienInvasion:
 		self.ship.blitme()
 		self._draw_bullets()
 		self.aliens.draw(self.screen)
+		#Draw the button if the game is inactive
+		if not self.stats.game_active:
+			self.play_button.draw_button()
 		#Make the most recently drawn screen visible.
-		pygame.display.flip()
+		pygame.display.flip()			
 
 	def _fire_bullet(self):
 		"""Create a new bullet and add it to the bullets group."""
@@ -195,7 +210,6 @@ class AlienInvasion:
 
 		else:
 			self.stats.game_active = False
-
 
 	def _check_fleet_edges(self):
 		"""Respond apporpriately if any aliens have reached an edge."""
