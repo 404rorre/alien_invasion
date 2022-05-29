@@ -73,6 +73,8 @@ class AlienInvasion:
 			if event.key == pygame.K_q:
 				self.play_music = False
 				self.exit_game = True
+			if event.key == pygame.K_p and not self.stats.game_active:
+				self._start_game()
 			if event.key == pygame.K_SPACE:
 				self._fire_bullet()
 
@@ -98,18 +100,25 @@ class AlienInvasion:
 		"""Checks if button was clicked."""
 		if (self.play_button.rect.collidepoint(mouse_pos) and 
 			not self.stats.game_active):
-			#Reset the game statistics.
-			self.stats.reset_stats()
-			self.stats.game_active = True
-			#Get rid of any remaining aliens and bullets.
-			self.aliens.empty()
-			self.bullets.empty()
-			#create new fleet and reset ship position
-			self._create_fleet()
-			self.ship.center_ship()
-			#Hide the mouse cursor.
-			pygame.mouse.set_visible(False)
-	
+			self._start_game()
+
+	def _start_game(self):
+		"""
+		Script to start game after clicking on the 'start'-button
+		or pressing 'p'.
+		"""
+		#Reset the game statistics.
+		self.stats.reset_stats()
+		self.stats.game_active = True
+		#Get rid of any remaining aliens and bullets.
+		self.aliens.empty()
+		self.bullets.empty()
+		#create new fleet and reset ship position
+		self._create_fleet()
+		self.ship.center_ship()
+		#Hide the mouse cursor.
+		pygame.mouse.set_visible(False)
+		
 	def _update_screen(self):
 		"""Update images on the screen and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
