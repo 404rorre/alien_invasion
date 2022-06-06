@@ -10,3 +10,5 @@ class GameStats:
 		self.ships_left = self.settings.ship_limit
 		#Start Alien Invasion in an inactive state.
 		self.game_active = False
+		#Receive difficulty
+		self.game_lvl = None

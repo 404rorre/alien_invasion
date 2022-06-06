@@ -8,16 +8,40 @@ class Settings:
 		self.screen_height = 800
 		self.bg_color = (230, 230, 230)
 		#Ship settings
-		self.ship_speed = 1.5
 		self.ship_limit = 3
 		#Bullet settings
-		self.bullet_speed = 1.5
-		self.bullet_width = 3
+		self.bullet_width = 3440
 		self.bullet_height = 15
 		self.bullet_color = (31, 81, 255)
 		self.bullets_allowed = 10
+		#Difficulty settings (factor for game start)
+		self.lvl_easy = 0.5
+		self.lvl_medium = 1.0
+		self.lvl_hard = 2.0
 		#Alien settings
-		self.alien_speed = 0.5
-		self.fleet_drop_speed = 100
-		#fleet_direction of 1 represents right; -1 represents left.
+		self.fleet_drop_speed = 5
+		#How quickly the game speeds up
+		self.speedup_scale = 1.1
+		self.initialize_dynamic_settings(lvl_difficulty = self.lvl_medium)
+
+	def get_dicciculty(self):
+		"""Receives difficulty and changes dynamic settings for that mode."""
+
+	def initialize_dynamic_settings(self, lvl_difficulty):
+		"""Initialize settings that change throughout the game."""
+		#sip settings (dynamic)
+		self.ship_speed = 1.5 * lvl_difficulty
+		#bullet settings (dynamic)
+		self.bullet_speed = 3.0 * lvl_difficulty
+		#alien settings (dynamic)
+		self.alien_speed = 1.0 * lvl_difficulty
+		#fleet direction (dynamic)
+		#orientation 1 == right, -1 == left
 		self.fleet_direction = 1
+
+	def increase_speed(self):
+		"""Increase speed settings."""
+		self.ship_speed *= self.speedup_scale
+		self.bullet_speed *= self.speedup_scale
+		self.alien_speed *= self.speedup_scale
+

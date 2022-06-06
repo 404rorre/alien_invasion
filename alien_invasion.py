@@ -34,6 +34,9 @@ class AlienInvasion:
 		self._create_fleet()
 		#Initializing buttons.
 		self.play_button = Button(self, "Play")
+		self.button_lvl_easy = Button(self, "Easy", "topleft")
+		self.button_lvl_medium = Button(self, "Medium", "midleft")
+		self.button_lvl_hard = Button(self, "Hard", "bottomleft")
 		#Initializing music.
 		self.music = Music()
 
@@ -43,7 +46,7 @@ class AlienInvasion:
 		while True:
 			self._check_events()
 
-			if self.stats.game_active:
+			if self.stats.game_active and self.stats.game_lvl:
 				self.ship.update()
 				self._update_bullets()
 				self._update_aliens()
@@ -59,7 +62,10 @@ class AlienInvasion:
 				self._check_close_game(event)
 				if event.type == pygame.MOUSEBUTTONDOWN:
 					mouse_pos = pygame.mouse.get_pos()
-					self._check_play_button(mouse_pos)
+					if not self.stats.game_active:
+						self._check_play_button(mouse_pos)
+					if self.stats.game_active and not self.stats.game_lvl:
+						self._get_game_difficulty(mouse_pos)
 
 	def _check_keydown_events(self, event):
 		"""Respond to key press."""
@@ -100,7 +106,7 @@ class AlienInvasion:
 		"""Checks if button was clicked."""
 		if (self.play_button.rect.collidepoint(mouse_pos) and 
 			not self.stats.game_active):
-			self._start_game()
+			self.stats.game_active = True
 
 	def _start_game(self):
 		"""
@@ -110,6 +116,7 @@ class AlienInvasion:
 		#Reset the game statistics.
 		self.stats.reset_stats()
 		self.stats.game_active = True
+		self.stats.game_lvl = True
 		#Get rid of any remaining aliens and bullets.
 		self.aliens.empty()
 		self.bullets.empty()
@@ -128,8 +135,35 @@ class AlienInvasion:
 		#Draw the button if the game is inactive
 		if not self.stats.game_active:
 			self.play_button.draw_button()
+		if self.stats.game_active and not self.stats.game_lvl:
+			self.button_lvl_easy.draw_button()
+			self.button_lvl_medium.draw_button()
+			self.button_lvl_hard.draw_button()
 		#Make the most recently drawn screen visible.
 		pygame.display.flip()			
+
+	def _get_game_difficulty(self, mouse_pos):
+		"""
+		Shows difficulty buttons and returns difficulty level to start with.
+		"""
+		if (self.button_lvl_easy.rect.collidepoint(mouse_pos) and 
+			not self.stats.game_lvl):
+			self.stats.game_lvl = self.settings.lvl_easy
+			print("easy")
+		if (self.button_lvl_medium.rect.collidepoint(mouse_pos) and 
+			not self.stats.game_lvl):
+			self.stats.game_lvl = self.settings.lvl_medium
+			print("medium")
+		if (self.button_lvl_hard.rect.collidepoint(mouse_pos) and 
+			not self.stats.game_lvl):
+			self.stats.game_lvl = self.settings.lvl_hard
+			print("hard")
+
+		#Starts game after diffculty level is choosen
+		#& Resets settings to choosen level
+		if self.stats.game_lvl:
+			self.settings.initialize_dynamic_settings(self.stats.game_lvl)
+			self._start_game()	
 
 	def _fire_bullet(self):
 		"""Create a new bullet and add it to the bullets group."""
@@ -151,6 +185,7 @@ class AlienInvasion:
 			#Destroy existing bullets and create new fleet.
 			self.bullets.empty()
 			self._create_fleet()
+			self.settings.increase_speed()
 
 	def _draw_bullets(self):
 		"""Simple functions to draw bullets on screen."""
