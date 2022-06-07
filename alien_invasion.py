@@ -7,6 +7,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from button import Button
+from scoreboard import Scoreboard
 from music import Music
 
 class AlienInvasion:
@@ -23,7 +24,9 @@ class AlienInvasion:
 		self.settings.screen_height = self.screen.get_rect().height
 		pygame.display.set_caption("Alien Invasion")
 		#Create an instance to store game statistics
+			#and a scoreboard
 		self.stats = GameStats(self)
+		self.sb = Scoreboard(self)
 		#Initializing objects
 		self.ship = Ship(self)
 		self.aliens = pygame.sprite.Group()
@@ -116,6 +119,8 @@ class AlienInvasion:
 		#Reset the game statistics.
 		self.stats.reset_stats()
 		self.stats.game_active = True
+		self.sb.prep_score()
+		self.sb.prep_lvl()
 		self.stats.game_lvl = True
 		#Get rid of any remaining aliens and bullets.
 		self.aliens.empty()
@@ -132,6 +137,8 @@ class AlienInvasion:
 		self.ship.blitme()
 		self._draw_bullets()
 		self.aliens.draw(self.screen)
+		#Draw the score information
+		self.sb.show_score()
 		#Draw the button if the game is inactive
 		if not self.stats.game_active:
 			self.play_button.draw_button()
@@ -186,17 +193,26 @@ class AlienInvasion:
 			self.bullets.empty()
 			self._create_fleet()
 			self.settings.increase_speed()
+			#Increas level.
+			self.stats.lvl += 1
+			self.sb.prep_lvl()
 
 	def _draw_bullets(self):
 		"""Simple functions to draw bullets on screen."""
 		for bullet in self.bullets.sprites():
 			bullet.draw_bullet()
-
+ 
 	def _check_bullet_alien_collision(self):
 		"""Respond to bullet-alien collision."""
 		#Remove any bullets and aliens that have collided.
 		collisions = pygame.sprite.groupcollide(
 			self.bullets, self.aliens, True, True)
+
+		if collisions:
+			for aliens in collisions.values():
+				self.stats.score += self.settings.alien_points * len(aliens)
+			self.sb.prep_score()
+			self.sb.check_high_score()
 
 	def _create_fleet(self):
 		"""Create the fleet of aliens."""
@@ -265,6 +281,7 @@ class AlienInvasion:
 
 		else:
 			self.stats.game_active = False
+			self.stats.game_lvl = None
 			#Show mouse cursor again
 			pygame.mouse.set_visible(True)
 

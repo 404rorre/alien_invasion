@@ -17,15 +17,14 @@ class Settings:
 		#Difficulty settings (factor for game start)
 		self.lvl_easy = 0.5
 		self.lvl_medium = 1.0
-		self.lvl_hard = 2.0
+		self.lvl_hard = 20
 		#Alien settings
 		self.fleet_drop_speed = 5
 		#How quickly the game speeds up
 		self.speedup_scale = 1.1
+		#How quickly the alien point values increase
+		self.score_scale = 1.5
 		self.initialize_dynamic_settings(lvl_difficulty = self.lvl_medium)
-
-	def get_dicciculty(self):
-		"""Receives difficulty and changes dynamic settings for that mode."""
 
 	def initialize_dynamic_settings(self, lvl_difficulty):
 		"""Initialize settings that change throughout the game."""
@@ -35,13 +34,16 @@ class Settings:
 		self.bullet_speed = 3.0 * lvl_difficulty
 		#alien settings (dynamic)
 		self.alien_speed = 1.0 * lvl_difficulty
+			#scoring
+		self.alien_points = 50
 		#fleet direction (dynamic)
 		#orientation 1 == right, -1 == left
 		self.fleet_direction = 1
 
 	def increase_speed(self):
-		"""Increase speed settings."""
+		"""Increase speed settings amd alien point values."""
 		self.ship_speed *= self.speedup_scale
 		self.bullet_speed *= self.speedup_scale
 		self.alien_speed *= self.speedup_scale
+		self.alien_points = int(self.alien_points * self.score_scale)
 
