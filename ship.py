@@ -1,9 +1,13 @@
 import pygame #is needed for the instance of "ai_game"
+from pygame.sprite import Sprite
 
-class Ship:
+class Ship(Sprite):
 	"""A class to manage the ship."""
 	def __init__(self, ai_game):
 		"""Intialize the ship and set its starting position."""
+		#Initialize inherited class
+		super().__init__()
+		#Initialize game attributes
 		self.screen = ai_game.screen
 		self.settings = ai_game.settings
 		self.screen_rect = ai_game.screen.get_rect()
