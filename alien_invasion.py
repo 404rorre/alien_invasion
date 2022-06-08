@@ -263,13 +263,20 @@ class AlienInvasion:
 		"""
 		self._check_fleet_edges()
 		self.aliens.update()
-
-		#Look for alien-shield collisions
-				#Look for alien-ship collisions.
-		if pygame.sprite.spritecollideany(self.ship, self.aliens):
-			self._ship_hit()
+		self._check_alien_ship_shield_collision()		
 		#Look for aliens hitting the bottom of the screen.
 		self._check_aliens_bottom()
+
+	def _check_alien_ship_shield_collision(self):
+		"""Checks for collision with shield and then with ship."""
+		#Look for alien-shield collisions
+		if (pygame.sprite.spritecollideany(self.shield, self.aliens) and
+			self.stats.shields_left > 0):
+			self.stats.shields_left -= 1
+			self._reset_during_game()
+		#Look for alien-ship collisions.
+		elif pygame.sprite.spritecollideany(self.ship, self.aliens):
+			self._ship_hit()
 
 	def _check_aliens_bottom(self):
 		"""Check if any aliens have reached the bottom of the screen."""
@@ -282,24 +289,27 @@ class AlienInvasion:
 
 	def _ship_hit(self):
 		"""Respond to the ship being hit by an alien."""
+		#Decrement ships_left.
 		self.stats.ships_left -= 1
 		self.sb.prep_ships()
 		if self.stats.ships_left > 0:
-			#Decrement ships_left.
-			#Get rid of any remaining aliens and bullets.
-			self.aliens.empty()
-			self.bullets.empty()
-			#Create a new fleet and center the ship.
-			self._create_fleet()
-			self.ship.center_ship()
-			#Pause
-			sleep(0.5)
-
+			self._reset_during_game()
 		else:
 			self.stats.game_active = False
 			self.stats.game_lvl = None
 			#Show mouse cursor again
 			pygame.mouse.set_visible(True)
+
+	def _reset_during_game(self):
+		"""Resets during hit of shield, ship or bottom screen."""
+		#Get rid of any remaining aliens and bullets.
+		self.aliens.empty()
+		self.bullets.empty()
+		#Create a new fleet and center the ship.
+		self._create_fleet()
+		self.ship.center_ship()
+		#Pause
+		sleep(0.5)
 
 	def _check_fleet_edges(self):
 		"""Respond apporpriately if any aliens have reached an edge."""

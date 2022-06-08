@@ -9,7 +9,8 @@ class Settings:
 		self.bg_color = (230, 230, 230)
 		#Ship settings
 		self.ship_limit = 3
-		#Shielf settings
+		#Shield settings
+		self.shield_limit = 1
 		self.shield_color = (0, 0, 255)
 		#Bullet settings
 		self.bullet_width = 3440
