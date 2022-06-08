@@ -4,6 +4,7 @@ from time import sleep
 from settings import Settings
 from game_stats import GameStats
 from ship import Ship
+from shield import Shield
 from bullet import Bullet
 from alien import Alien
 from button import Button
@@ -32,6 +33,7 @@ class AlienInvasion:
 		self.high_score = Save(self)
 		#Initializing objects
 		self.ship = Ship(self)
+		self.shield = Shield(self)
 		self.aliens = pygame.sprite.Group()
 		self.bullets = pygame.sprite.Group()
 		#system flags
@@ -55,6 +57,7 @@ class AlienInvasion:
 
 			if self.stats.game_active and self.stats.game_lvl:
 				self.ship.update()
+				self.shield.update()
 				self._update_bullets()
 				self._update_aliens()
 
@@ -141,10 +144,17 @@ class AlienInvasion:
 		"""Update images on the screen and flip to the new screen."""
 		self.screen.fill(self.settings.bg_color)
 		self.ship.blitme()
+		self.shield.blitme()
 		self._draw_bullets()
 		self.aliens.draw(self.screen)
 		#Draw the score information
 		self.sb.show_score()
+		self._draw_buttons()		
+		#Make the most recently drawn screen visible.
+		pygame.display.flip()	
+
+	def _draw_buttons(self):
+		"""Simple method to draw every button available."""
 		#Draw the button if the game is inactive
 		if not self.stats.game_active:
 			self.play_button.draw_button()
@@ -152,8 +162,6 @@ class AlienInvasion:
 			self.button_lvl_easy.draw_button()
 			self.button_lvl_medium.draw_button()
 			self.button_lvl_hard.draw_button()
-		#Make the most recently drawn screen visible.
-		pygame.display.flip()			
 
 	def _get_game_difficulty(self, mouse_pos):
 		"""
@@ -256,9 +264,10 @@ class AlienInvasion:
 		self._check_fleet_edges()
 		self.aliens.update()
 
-		#Look for alien-ship collisions.
+		#Look for alien-shield collisions
+				#Look for alien-ship collisions.
 		if pygame.sprite.spritecollideany(self.ship, self.aliens):
-					self._ship_hit()
+			self._ship_hit()
 		#Look for aliens hitting the bottom of the screen.
 		self._check_aliens_bottom()
 

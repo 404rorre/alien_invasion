@@ -9,6 +9,8 @@ class Settings:
 		self.bg_color = (230, 230, 230)
 		#Ship settings
 		self.ship_limit = 3
+		#Shielf settings
+		self.shield_color = (0, 0, 255)
 		#Bullet settings
 		self.bullet_width = 3440
 		self.bullet_height = 15
@@ -35,7 +37,7 @@ class Settings:
 		#alien settings (dynamic)
 		self.alien_speed = 1.0 * lvl_difficulty
 			#scoring
-		self.alien_points = 50
+		self.alien_points = 50 * lvl_difficulty
 		#fleet direction (dynamic)
 		#orientation 1 == right, -1 == left
 		self.fleet_direction = 1
