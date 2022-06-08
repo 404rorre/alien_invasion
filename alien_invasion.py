@@ -9,6 +9,7 @@ from alien import Alien
 from button import Button
 from scoreboard import Scoreboard
 from music import Music
+from save import Save
 
 class AlienInvasion:
 	"""Overall class to manage games assets and behaviour."""
@@ -25,8 +26,10 @@ class AlienInvasion:
 		pygame.display.set_caption("Alien Invasion")
 		#Create an instance to store game statistics
 			#and a scoreboard
+			#and a save option for high score
 		self.stats = GameStats(self)
 		self.sb = Scoreboard(self)
+		self.high_score = Save(self)
 		#Initializing objects
 		self.ship = Ship(self)
 		self.aliens = pygame.sprite.Group()
@@ -35,6 +38,7 @@ class AlienInvasion:
 		self.exit_game = False
 		#Functions
 		self._create_fleet()
+		self.high_score.hs_load()
 		#Initializing buttons.
 		self.play_button = Button(self, "Play")
 		self.button_lvl_easy = Button(self, "Easy", "topleft")
@@ -103,6 +107,7 @@ class AlienInvasion:
 			self.exit_game =True
 		if self.exit_game:
 			self.music.stop()
+			self.high_score.hs_save()
 			sys.exit()
 
 	def _check_play_button(self, mouse_pos):
