@@ -43,7 +43,7 @@ class Shield:
 	def blitme(self):
 		"""Draws shield on screen."""
 		if self.stats.shields_left > 0:
-			pygame.draw.rect(self.screen, self.hitbox_color, self.hitbox, 1)
+			#pygame.draw.rect(self.screen, self.hitbox_color, self.hitbox, 1)
 			pygame.draw.circle(self.screen,
 							self.settings.shield_color,
 							self.center,

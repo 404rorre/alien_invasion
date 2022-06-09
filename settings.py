@@ -13,7 +13,7 @@ class Settings:
 		self.shield_limit = 1
 		self.shield_color = (0, 0, 255)
 		#Bullet settings
-		self.bullet_width = 3440
+		self.bullet_width = 3
 		self.bullet_height = 15
 		self.bullet_color = (31, 81, 255)
 		self.bullets_allowed = 10

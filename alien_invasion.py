@@ -90,7 +90,7 @@ class AlienInvasion:
 				self.play_music = False
 				self.exit_game = True
 			if event.key == pygame.K_p and not self.stats.game_active:
-				self._start_game()
+				self.stats.game_active = True
 			if event.key == pygame.K_SPACE:
 				self._fire_bullet()
 
